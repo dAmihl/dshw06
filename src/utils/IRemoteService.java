@@ -6,6 +6,6 @@ import java.util.concurrent.Callable;
 
 public interface IRemoteService extends Remote {
 	
-	public <T> IJob<T> submit(Callable<T> job) throws RemoteException;
+	public <T> IJobMonitor<T> submit(Callable<T> job) throws RemoteException;
 
 }

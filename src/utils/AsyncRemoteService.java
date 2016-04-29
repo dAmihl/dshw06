@@ -23,10 +23,11 @@ public class AsyncRemoteService implements IRemoteService{
 	}
 	
 	@Override
-	public <T> IJob<T> submit(Callable<T> job) throws RemoteException {
+	public <T> IJobMonitor<T> submit(Callable<T> job) throws RemoteException {
 		AsyncJobThread<T> jobThread = new AsyncJobThread<T>(job);
+		IJobMonitor<T> monitor = jobThread.getRemoteMonitor();
 		this.executorService.submit(jobThread);
-		return jobThread;
+		return monitor;
 	}
 
 }

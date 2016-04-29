@@ -1,44 +1,35 @@
 package server;
 
-import java.io.Serializable;
 import java.util.concurrent.Callable;
 
-import utils.IJob;
+import utils.IJobMonitor;
 
-public class AsyncJobThread<T> extends Thread implements IJob<T>, Serializable {
+public class AsyncJobThread<T> extends Thread {
 	
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3146147932805156791L;
 	
 	public Callable<T> job;
-	private boolean bIsDone;
-	private T result = null;
+	private BasicJobMonitor<T> monitor;
 	
 	public AsyncJobThread(Callable<T> job){
 		this.job = job;
+		this.monitor = new BasicJobMonitor<T>();
+	}
+	
+	public IJobMonitor<T> getRemoteMonitor(){
+		return this.monitor;
 	}
 	
 	@Override
 	public void run() {
 		try {
-			this.result = this.job.call();
-			this.bIsDone = true;
+			T result = this.job.call();
+			this.monitor.setIsDone(true);
+			this.monitor.setResult(result);
 			ServerLog.jobLog(this.toString(), "Job is done..");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	@Override
-	public boolean isDone() {
-		return this.bIsDone;
-	}
-
-	@Override
-	public T getResult() {
-		return this.result;
-	}
 
 }

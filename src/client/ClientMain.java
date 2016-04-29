@@ -6,7 +6,7 @@ import java.rmi.registry.Registry;
 
 import client.remotejobs.SimpleSleepJob;
 import utils.AsyncRemoteService;
-import utils.IJob;
+import utils.IJobMonitor;
 import utils.IRemoteService;
 
 public class ClientMain {
@@ -34,7 +34,7 @@ public class ClientMain {
 	private void testRMI(){
 		System.out.println("Sending simple sleep job..");
 		SimpleSleepJob sleepJob = new SimpleSleepJob();
-		IJob<Boolean> job;
+		IJobMonitor<Boolean> job;
 		try {
 			if ((job = remoteService.submit(sleepJob)) == null){
 				System.out.println("Couldnt submit job..");
