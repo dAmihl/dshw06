@@ -1,5 +1,9 @@
 package application;
 
+
+import client.ClientMain;
+import server.ServerMain;
+
 public class Application {
 
 	private static boolean bRunAsServer = true;
@@ -17,11 +21,11 @@ public class Application {
 	}
 	
 	private static void runServer(){
-		
+		new ServerMain().startServer();
 	}
 	
 	private static void runClient(){
-		
+		new ClientMain().startClient();
 	}
 	
 }
