@@ -14,7 +14,7 @@ public class AsyncRemoteService implements IRemoteService{
 	public static final String SERVICE_NAME = "RMI_SERVICE";
 	public static final Integer SERVICE_PORT = 1099;
 	
-	private static final Integer MAX_NUMBER_JOBS = 1;
+	private static final Integer MAX_NUMBER_JOBS = 5;
 	
 	private Integer CURRENT_NUM_JOBS = 0;
 	
