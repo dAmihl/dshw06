@@ -35,7 +35,8 @@ public class ClientMain {
 	private void startClientUsingDispatcher(){
 		System.out.println("Client started using dispatcher.");
 		obtainDispatcherService();
-		testDispatcher();
+		//testDispatcher();
+		stressTestDispatcher();
 	}
 	
 	private void initRMI(){
@@ -84,6 +85,7 @@ public class ClientMain {
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	private void testDispatcher(){
 		System.out.println("Sending simple sleep job to dispatcher..");
 		SimpleSleepJob sleepJob = new SimpleSleepJob();
@@ -103,6 +105,27 @@ public class ClientMain {
 		} catch (InvalidStateException e) {
 			System.out.println("Job is done but No result found.");
 			e.printStackTrace();
+		}
+	}
+	
+	private void stressTestDispatcher(){
+		int numSubmissions = 12;
+		System.out.println("Stress testing dispatcher.. sending 12 job submissions.");
+		
+		for (int i = 0; i < numSubmissions; i++){
+			SimpleSleepJob sleepJob = new SimpleSleepJob();
+		
+			try {
+				@SuppressWarnings("unused")
+				IJobMonitor<Boolean> job;
+				if ((job = dispatcherService.submit(sleepJob)) == null){
+					System.out.println("Job submission rejected by server..");
+				}else{
+					System.out.println("Sleepjob submitted..waiting.");
+				}
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

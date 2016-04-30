@@ -15,6 +15,8 @@ public class RemoteDispatcher implements IRemoteDispatcher {
 	
 	private ArrayList<IRemoteService> registeredServers;
 	
+	private Integer NEXT_SERVER_INDEX = 0;
+	
 	public RemoteDispatcher(){
 		this.registeredServers = new ArrayList<>();
 	}
@@ -26,15 +28,37 @@ public class RemoteDispatcher implements IRemoteDispatcher {
 			System.out.println("No registered servers.. rejecting job submission.");
 			return null;
 		}
-		IJobMonitor<T> monitor = registeredServers.get(0).submit(job);
-		System.out.println("Job dispatched.");
+		determineNextServerIndex();
+		
+		IJobMonitor<T> monitor = null;
+		
+		// very simple dispatching algorithm :)
+		for (int i = 0; i < this.registeredServers.size(); i++){
+			monitor = registeredServers.get(NEXT_SERVER_INDEX).submit(job);
+			if (monitor != null){
+				break;
+			}else{
+				determineNextServerIndex();
+			}
+		}
+		if (monitor != null){
+			System.out.println("Job dispatched to "+registeredServers.get(NEXT_SERVER_INDEX));
+		}else{
+			System.out.println("Job couldnt be dispatched. All known servers are busy.. this COULD end in a queue though :)");
+		}
 		return monitor;
 	}
+	
 
 	@Override
 	public Boolean registerServer(IRemoteService serverStub) throws RemoteException {
 		this.registeredServers.add(serverStub);
 		return true;
+	}
+	
+	private void determineNextServerIndex(){
+		this.NEXT_SERVER_INDEX += 1;
+		this.NEXT_SERVER_INDEX = this.NEXT_SERVER_INDEX % this.registeredServers.size();
 	}
 
 }
