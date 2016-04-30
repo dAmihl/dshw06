@@ -11,7 +11,7 @@ public class SimpleSleepJob extends BasicRemoteJob<Boolean> {
 	@Override
 	public Boolean call() throws Exception {
 		System.out.println("Executing job. Sleepjob for 5seconds.");
-		Thread.sleep(5000);
+		Thread.sleep(10000);
 		return true;
 	}
 

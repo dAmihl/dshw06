@@ -5,9 +5,10 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 import client.remotejobs.SimpleSleepJob;
-import utils.AsyncRemoteService;
+import server.AsyncRemoteService;
 import utils.IJobMonitor;
 import utils.IRemoteService;
+import utils.InvalidStateException;
 
 public class ClientMain {
 
@@ -37,14 +38,18 @@ public class ClientMain {
 		IJobMonitor<Boolean> job;
 		try {
 			if ((job = remoteService.submit(sleepJob)) == null){
-				System.out.println("Couldnt submit job..");
+				System.out.println("Job submission rejected by server..");
 			}else{
-				System.out.println("Sleepjob submitted..");
+				System.out.println("Sleepjob submitted..waiting.");
 				while (!job.isDone());
 				System.out.println("Sleepjob finished now.");
+				System.out.println("Result of job is: "+job.getResult());
 				
 			}
 		} catch (RemoteException e) {
+			e.printStackTrace();
+		} catch (InvalidStateException e) {
+			System.out.println("Job is done but No result found.");
 			e.printStackTrace();
 		}
 	}
