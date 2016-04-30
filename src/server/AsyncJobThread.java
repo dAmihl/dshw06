@@ -10,9 +10,9 @@ public class AsyncJobThread<T> extends Thread {
 	public Callable<T> job;
 	private BasicJobMonitor<T> monitor;
 	
-	public AsyncJobThread(Callable<T> job){
+	public AsyncJobThread(Callable<T> job, IJobMonitor<T> jobMonitor){
 		this.job = job;
-		this.monitor = new BasicJobMonitor<T>();
+		this.monitor = (BasicJobMonitor<T>) jobMonitor;
 	}
 	
 	public IJobMonitor<T> getRemoteMonitor(){

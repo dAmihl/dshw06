@@ -1,11 +1,13 @@
 package utils;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import server.AsyncJobThread;
+import server.BasicJobMonitor;
 
 public class AsyncRemoteService implements IRemoteService{
 	
@@ -24,10 +26,13 @@ public class AsyncRemoteService implements IRemoteService{
 	
 	@Override
 	public <T> IJobMonitor<T> submit(Callable<T> job) throws RemoteException {
-		AsyncJobThread<T> jobThread = new AsyncJobThread<T>(job);
-		IJobMonitor<T> monitor = jobThread.getRemoteMonitor();
+		IJobMonitor<T> monitor = new BasicJobMonitor<>();
+		@SuppressWarnings("unchecked")
+		IJobMonitor<T> stubMonitor = (IJobMonitor<T>) UnicastRemoteObject.exportObject(monitor,0);
+		AsyncJobThread<T> jobThread = new AsyncJobThread<T>(job, monitor);
+		
 		this.executorService.submit(jobThread);
-		return monitor;
+		return stubMonitor;
 	}
 
 }
